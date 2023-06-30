@@ -6,6 +6,19 @@
 
 {% block main %}
 
+<form action="/search">
+    <input placeholder="Search for your stock here" name="q" list="stock-names"/>
+    <datalist id="stock-names">
+        {% for name in stock_names %}
+        <option value="{{name}}" />
+        {% endfor %}
+    </datalist>
+    <button>Go</button>
+</form>
+
 <h1>{{name}}</h1>
+
+<h2>Closing Price Predictions</h2>
+<img src="data:image/png;base64,{{close_graph_data}}" />
 
 {% endblock %}

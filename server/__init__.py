@@ -6,6 +6,7 @@ from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 from models.lstm import get_graph
+from models.sentiment import get_sentiment_polarity_graph
 
 app = Flask(__name__)
 
@@ -67,9 +68,12 @@ def stock(name):
         with open(f'models/scaler_{col}.pickle', 'rb') as pkl:
             scaler = pickle.load(pkl)
         graphs[col] = get_graph(name, col, scaler)
+    
+    sentiment_graph_data = get_sentiment_polarity_graph(name)
 
     return render_template('stock.html', **{
         'name': name,
         'stock_names': stock_names,
-        'graphs_data': graphs
+        'graphs_data': graphs,
+        'sentiment_graph_data': sentiment_graph_data
     })

@@ -17,8 +17,13 @@
 </form>
 
 <h1>{{name}}</h1>
+
+<h2>Sentiment Analysis using NLP</h2>
+<img src="data:image/png;base64,{{sentiment_graph_data}}" />
+
+<h2>Predictions using LSTM Models</h2>
 {% for col in graphs_data %}
-    <h2>{{col}} Price Predictions</h2>
+    <h3>{{col}} Price Predictions</h3>
     <img src="data:image/png;base64,{{graphs_data[col]}}" />
 {% endfor %}
 

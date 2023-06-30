@@ -17,8 +17,9 @@
 </form>
 
 <h1>{{name}}</h1>
-
-<h2>Closing Price Predictions</h2>
-<img src="data:image/png;base64,{{close_graph_data}}" />
+{% for col in graphs_data %}
+    <h2>{{col}} Price Predictions</h2>
+    <img src="data:image/png;base64,{{graphs_data[col]}}" />
+{% endfor %}
 
 {% endblock %}

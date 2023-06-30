@@ -1,15 +1,11 @@
 import os
 import pickle
-import base64
 
-from io import BytesIO
-from datetime import datetime
-from matplotlib.figure import Figure
 
 from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 
-from models.lstm import get_20_days_n_preds
+from models.lstm import get_graph
 
 app = Flask(__name__)
 
@@ -54,24 +50,26 @@ def search():
 
 @app.route('/stock/<name>')
 def stock(name):
-    # predictions graph
-    stock_data = get_20_days_n_preds(name, n=10)
+    # predictions graphs
+    columns = [
+        'Open',
+        'High',
+        'Low',
+        'Close',
+        'Adj Close',
+        'Volume'
+    ]
 
-    fig = Figure()
-    ax = fig.subplots()
-    ax.set_title('Closing Price Predictions')
-    ax.set_xlabel('Date', fontsize=18)
-    ax.set_ylabel('Close Price USD ($)', fontsize=18)
-    ax.plot(stock_data)
-    ax.axvline(x = datetime.today(), color='r')
-    ax.legend(['Closing Price', 'Predictions'], loc='lower left')
+    graphs = {}
 
-    buf = BytesIO()
-    fig.savefig(buf, format="png")
-    data = base64.b64encode(buf.getbuffer()).decode("ascii")
+    for col in columns:
+        scaler = None
+        with open(f'models/scaler_{col}.pickle', 'rb') as pkl:
+            scaler = pickle.load(pkl)
+        graphs[col] = get_graph(name, col, scaler)
 
     return render_template('stock.html', **{
         'name': name,
         'stock_names': stock_names,
-        'close_graph_data': data
+        'graphs_data': graphs
     })

@@ -2,14 +2,25 @@
 
 {% block title %} Search {% endblock %}
 
-{% block head %} {% endblock %}
+{% block head %}
+    {% if error is defined %}
+    <script>
+        alert("{{error}}");
+    </script>
+    {% endif %}
+{% endblock %}
 
 {% block main %}
 
 <h1>Search</h1>
 
-<form action="/stock">
-    <input placeholder="Search for your stock here" name="q" />
+<form action="/search">
+    <input placeholder="Search for your stock here" name="q" list="stock-names"/>
+    <datalist id="stock-names">
+        {% for name in stock_names %}
+        <option value="{{name}}" />
+        {% endfor %}
+    </datalist>
     <button>Go</button>
 </form>
 

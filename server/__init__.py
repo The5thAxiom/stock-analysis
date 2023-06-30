@@ -1,4 +1,5 @@
 import os
+import pickle
 from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 
@@ -9,9 +10,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+stock_names = []
+with open('./stock_names.pickle', 'rb') as pkl:
+    stock_names = pickle.load(pkl)
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', **{
+        'stock_names': stock_names
+    })
 
 @app.route('/about')
 def about():
@@ -23,12 +30,22 @@ def license():
 
 @app.route('/search')
 def search():
-    return render_template('search.html')
+    query = request.args.get('q')
+    is_valid_stock = query in stock_names
+    if query is None:
+        return render_template('search.html', **{
+            'stock_names': stock_names
+        })
+    elif is_valid_stock:
+        return redirect(f'/stock/{query}')
+    else:
+        return render_template('search.html', **{
+            'stock_names': stock_names,
+            'error': f'{query} is not a valid stock symbol'
+        })
 
 @app.route('/stock/<name>')
 def stock(name):
-    query = request.args.get('q')
-    # find the correct stock from the search term here
     # perform stock analysis here
     return render_template('stock.html', **{
         'name': name

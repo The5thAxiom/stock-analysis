@@ -65,7 +65,7 @@ def stock(name):
 
     for col in columns:
         scaler = None
-        with open(f'models/scaler_{col}.pickle', 'rb') as pkl:
+        with open(f'models/saved/scaler_{col}.pickle', 'rb') as pkl:
             scaler = pickle.load(pkl)
         graphs[col] = get_graph(name, col, scaler)
     

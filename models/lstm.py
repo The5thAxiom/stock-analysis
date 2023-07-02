@@ -43,7 +43,7 @@ def get_20_days_n_preds(stock_name, column, scaler, n):
     end_time = datetime.now()
     start_time = datetime(end_time.year - 1, end_time.month, end_time.day)
 
-    model = keras.models.load_model(f'models/model_{column}.h5')
+    model = keras.models.load_model(f'models/saved/model_{column}.h5')
 
     raw_data = get_data(stock_name, column, start_time, end_time)
 
